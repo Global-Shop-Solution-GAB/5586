@@ -1,0 +1,61 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+
+'Hooks 
+'11560 (order populate)
+'10710 (quote populate)
+'mode new
+Variable.local.rdate.declare(Date)
+Variable.local.duedate.declare(String)
+Variable.local.daysremain.declare(Long)
+Variable.local.daytype.declare(Long)
+Variable.local.daysremain.set(7)
+
+f.Intrinsic.Control.If(v.Caller.Hook,=,"11560")
+
+	 Function.intrinsic.control.if(Variable.passed.000023,<>,"00000000")
+	 f.Intrinsic.Control.AndIf(v.Caller.Switches,=,"N")
+	 Function.intrinsic.date.convertdstring(Variable.passed.000023,"YYYYMMDD",Variable.local.rdate)
+	    Function.intrinsic.control.dountil(Variable.local.daysremain,=,0)
+	      Function.intrinsic.date.dateadd("d",1,Variable.local.rdate,Variable.local.rdate)
+	      Function.intrinsic.date.weekday(Variable.local.rdate,Variable.local.daytype)
+	      Function.intrinsic.control.if(Variable.local.daytype,>,1)
+	      Function.intrinsic.control.andif(Variable.local.daytype,<,6)
+	        Function.intrinsic.math.sub(Variable.local.daysremain,1,Variable.local.daysremain)
+	      Function.intrinsic.control.endif
+	    Function.intrinsic.control.loop
+	    Function.intrinsic.string.datestring(Variable.local.rdate,Variable.local.duedate)
+		
+	  Variable.passed.000024.set(V.Local.duedate)
+	
+	Function.intrinsic.control.endif
+
+f.Intrinsic.Control.ElseIf(v.Caller.Hook,=,"10710")
+
+Function.intrinsic.control.if(Variable.passed.000023,<>,"000000")
+	 f.Intrinsic.Control.AndIf(v.Caller.Switches,=,"N")
+	 Function.intrinsic.date.convertdstring(Variable.passed.000023,"MMDDYY",Variable.local.rdate)
+	    Function.intrinsic.control.dountil(Variable.local.daysremain,=,0)
+	      Function.intrinsic.date.dateadd("d",1,Variable.local.rdate,Variable.local.rdate)
+	      Function.intrinsic.date.weekday(Variable.local.rdate,Variable.local.daytype)
+	      Function.intrinsic.control.if(Variable.local.daytype,>,1)
+	      Function.intrinsic.control.andif(Variable.local.daytype,<,6)
+	        Function.intrinsic.math.sub(Variable.local.daysremain,1,Variable.local.daysremain)
+	      Function.intrinsic.control.endif
+	    Function.intrinsic.control.loop
+	    Function.intrinsic.string.datestring(Variable.local.rdate,Variable.local.duedate)
+		
+	  Variable.passed.000024.set(V.Local.duedate)
+	
+	Function.intrinsic.control.endif
+
+f.Intrinsic.Control.EndIf
+Program.Sub.Main.End
+
+
